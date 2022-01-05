@@ -1,0 +1,7 @@
+namespaceOverride: monitoring
+# TODO
+#prometheus:
+#  prometheusSpec:
+#    serviceMonitorSelector:
+#      matchLabels:
+#        prometheus: internal-prometheus

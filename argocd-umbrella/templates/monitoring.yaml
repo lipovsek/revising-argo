@@ -1,0 +1,20 @@
+# spoke clusters
+# TODO: applicationset prod dev/stg/prod
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-operator
+  namespace: {{ .Values.argo_ns }}
+spec:
+  project: {{ .Values.monitoring.project }}
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: "13.2.1"
+    chart: kube-prometheus-stack
+  destination:
+    namespace: {{ .Values.monitoring.namespace }}
+    server: {{ .Values.cluster }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
