@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gatekeeper-opa
+  namespace: {{ .Values.argo_ns }}
+spec:
+  project: {{ .Values.security.project }}
+  source:
+    repoURL: https://open-policy-agent.github.io/gatekeeper/charts
+    targetRevision: "3.7.0"
+    chart: gatekeeper
+    helm:
+      releaseName: gatekeeper-opa
+  destination:
+    namespace: {{ .Values.security.namespace }}
+    server: {{ .Values.cluster }}
+  ignoreDifferences: # alternative to configmap in monitoring
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+      name: configs.config.gatekeeper.sh
+      jsonPointers:
+        - /status
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+      name: constrainttemplates.templates.gatekeeper.sh
+      jsonPointers:
+        - /status
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

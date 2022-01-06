@@ -1,5 +1,8 @@
 argo_ns: argo-cd
 cluster: https://kubernetes.default.svc
 monitoring:
-  namespace: monitoring-internal
-  project: default #monitoring
+  namespace: monitoring
+  project: default #core
+security:
+  namespace: security
+  project: default #core

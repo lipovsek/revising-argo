@@ -1,5 +1,19 @@
-# spoke clusters
-# TODO: applicationset prod dev/stg/prod
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argo-cd
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-1"
+data:
+  resource.compareoptions: |
+    ignoreResourceStatusField: crd
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -11,6 +25,8 @@ spec:
     repoURL: https://prometheus-community.github.io/helm-charts
     targetRevision: "13.2.1"
     chart: kube-prometheus-stack
+    helm:
+      releaseName: prometheus
   destination:
     namespace: {{ .Values.monitoring.namespace }}
     server: {{ .Values.cluster }}
@@ -18,3 +34,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
