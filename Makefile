@@ -3,5 +3,7 @@ base:
 umbrella:
 	helm install umbrella ./argocd-umbrella
 bootstrap: base umbrella
+argo_cd_monitor:
+	kubectl apply -f utils/argocd-monitor.yaml
 teardown:
 	kind delete cluster
