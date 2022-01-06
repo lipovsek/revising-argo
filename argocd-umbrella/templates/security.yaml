@@ -4,7 +4,7 @@ metadata:
   name: gatekeeper-opa
   namespace: {{ .Values.argo_ns }}
 spec:
-  project: {{ .Values.security.project }}
+  project: {{ .Values.project }}
   source:
     repoURL: https://open-policy-agent.github.io/gatekeeper/charts
     targetRevision: "3.7.0"
