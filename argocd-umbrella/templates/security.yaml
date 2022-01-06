@@ -11,9 +11,6 @@ spec:
     chart: gatekeeper
     helm:
       releaseName: gatekeeper-opa
-  destination:
-    namespace: {{ .Values.security.namespace }}
-    server: {{ .Values.cluster }}
   ignoreDifferences: # alternative to configmap in monitoring,yaml
     {{- range (tuple "configs.config.gatekeeper.sh" "constrainttemplates.templates.gatekeeper.sh" )}}
     - group: apiextensions.k8s.io
@@ -22,9 +19,5 @@ spec:
       jsonPointers:
         - /status
     {{- end }}
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+  {{- include "argocd-umbrella.destination" . | nindent 2 }}
+  {{- include "argocd-umbrella.syncPolicy" . | nindent 2 }}

@@ -29,12 +29,5 @@ spec:
       releaseName: prometheus
       valueFiles:
       - https://raw.githubusercontent.com/lipovsek/revising-argo/basics/values/prometheus.yaml
-  destination:
-    namespace: {{ .Values.monitoring.namespace }}
-    server: {{ .Values.cluster }}
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+  {{- include "argocd-umbrella.destination" . | nindent 2 }}
+  {{- include "argocd-umbrella.syncPolicy" . | nindent 2 }}
