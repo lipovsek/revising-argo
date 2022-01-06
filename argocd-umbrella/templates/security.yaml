@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gatekeeper-opa
+  namespace: {{ .Values.argo_ns }}
+spec:
+  project: {{ .Values.project }}
+  source:
+    repoURL: https://open-policy-agent.github.io/gatekeeper/charts
+    targetRevision: "3.7.0"
+    chart: gatekeeper
+    helm:
+      releaseName: gatekeeper-opa
+  ignoreDifferences: # alternative to configmap in monitoring,yaml
+    {{- range (tuple "configs.config.gatekeeper.sh" "constrainttemplates.templates.gatekeeper.sh" )}}
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+      name: {{ . }}
+      jsonPointers:
+        - /status
+    {{- end }}
+  {{- include "argocd-umbrella.destination" . | nindent 2 }}
+  {{- include "argocd-umbrella.syncPolicy" . | nindent 2 }}

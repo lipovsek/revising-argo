@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: {{ .Values.argo_ns }}
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-1"
+data:
+  resource.compareoptions: |
+    ignoreResourceStatusField: crd
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-operator
+  namespace: {{ .Values.argo_ns }}
+spec:
+  project: {{ .Values.project }}
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: "13.2.1"
+    chart: kube-prometheus-stack
+    helm:
+      releaseName: prometheus
+      valueFiles:
+      - https://raw.githubusercontent.com/lipovsek/revising-argo/basics/values/prometheus.yaml
+  {{- include "argocd-umbrella.destination" . | nindent 2 }}
+  {{- include "argocd-umbrella.syncPolicy" . | nindent 2 }}

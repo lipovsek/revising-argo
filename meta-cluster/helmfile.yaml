@@ -1,0 +1,10 @@
+# "helmfile deps" later in docker to avoid helmfile version mismatch
+repositories:
+- name: argo
+  url: https://argoproj.github.io/argo-helm
+releases:
+  - name: argo-cd
+    namespace: argo-cd
+    chart: argo/argo-cd
+    createNamespace: true
+    version: 3.29.5

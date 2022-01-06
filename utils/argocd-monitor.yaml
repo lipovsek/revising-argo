@@ -1,0 +1,51 @@
+# this should probably become another chart
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: argo-cd-argocd-application-controller
+  namespace: monitoring
+spec:
+  groups:
+  - name: argocd
+    rules:
+    - alert: ArgoAppMissing
+      annotations:
+        description: |
+          ArgoCD has not reported any applications data for the past 15 minutes which means that it must be down or not functioning properly.  This needs to be resolved for this cloud to continue to maintain state.
+        summary: '[ArgoCD] No reported applications'
+      expr: |
+        absent(argocd_app_info)
+      for: 15m
+      labels:
+        severity: critical
+    - alert: ArgoAppNotSynced
+      annotations:
+        description: |
+          The application [{{`{{$labels.name}}`}} has not been synchronized for over 12 hours which means that the state of this cloud has drifted away from the state inside Git.
+        summary: '[{{`{{$labels.name}}`}}] Application not synchronized'
+      expr: |
+        argocd_app_info{sync_status!="Synced"} == 1
+      for: 12h
+      labels:
+        severity: warning
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: argo-cd-argocd-application-controller
+  namespace: monitoring
+spec:
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
+  namespaceSelector:
+    matchNames:
+      - argo-cd
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-metrics
+      app.kubernetes.io/instance: argo-cd
+      app.kubernetes.io/component: application-controller
+
