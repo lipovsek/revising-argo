@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: argocd-cm
-  namespace: argo-cd
+  namespace: {{ .Values.argo_ns }}
   labels:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
@@ -27,6 +27,12 @@ spec:
     chart: kube-prometheus-stack
     helm:
       releaseName: prometheus
+      values: |
+        prometheus:
+          prometheusSpec:
+            # https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack#prometheusioscrape
+            podMonitorSelectorNilUsesHelmValues: true
+            serviceMonitorSelectorNilUsesHelmValues: false
   destination:
     namespace: {{ .Values.monitoring.namespace }}
     server: {{ .Values.cluster }}

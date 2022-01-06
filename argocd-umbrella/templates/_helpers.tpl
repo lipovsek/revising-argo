@@ -60,3 +60,21 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+
+
+{{- define "argocd-umbrella.syncPolicy" -}}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+{{- end }}
+
+
+{{- define "argocd-umbrella.destination" -}}
+  destination:
+    namespace: {{ .Values.security.namespace }}
+    server: {{ .Values.cluster }}
+{{- end }}
