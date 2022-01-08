@@ -19,5 +19,7 @@ spec:
       jsonPointers:
         - /status
     {{- end }}
-  {{- include "argocd-umbrella.destination" . | nindent 2 }}
+  destination:
+    namespace: {{ .Values.security.namespace }}
+    server: {{ .Values.cluster }}
   {{- include "argocd-umbrella.syncPolicy" . | nindent 2 }}

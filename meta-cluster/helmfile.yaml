@@ -8,3 +8,4 @@ releases:
     chart: argo/argo-cd
     createNamespace: true
     version: 3.29.5
+    values: [values/argocd-metrics.yaml]

@@ -28,6 +28,8 @@ spec:
     helm:
       releaseName: prometheus
       valueFiles:
-      - https://raw.githubusercontent.com/lipovsek/revising-argo/basics/values/prometheus.yaml
-  {{- include "argocd-umbrella.destination" . | nindent 2 }}
+      - https://raw.githubusercontent.com/lipovsek/revising-argo/main/values/prometheus.yaml
+  destination:
+    namespace: {{ .Values.monitoring.namespace }}
+    server: {{ .Values.cluster }}
   {{- include "argocd-umbrella.syncPolicy" . | nindent 2 }}

@@ -71,10 +71,3 @@ Create the name of the service account to use
     syncOptions:
       - CreateNamespace=true
 {{- end }}
-
-
-{{- define "argocd-umbrella.destination" -}}
-  destination:
-    namespace: {{ .Values.security.namespace }}
-    server: {{ .Values.cluster }}
-{{- end }}
